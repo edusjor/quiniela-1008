@@ -4,6 +4,8 @@ node_modules/
 # build outputs
 apps/api/dist/
 apps/web/.next/
+*.tsbuildinfo
+*.zip
 
 # env files
 .env
