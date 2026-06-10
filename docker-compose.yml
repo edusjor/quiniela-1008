@@ -1,20 +1,4 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: q1008cam26_pg_31415
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - q1008cam26_pg_data_31415:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
   api:
     build:
       context: .
@@ -25,9 +9,6 @@ services:
       - ./apps/api/.env
     environment:
       PORT: 17643
-    depends_on:
-      postgres:
-        condition: service_healthy
 
   web:
     build:
@@ -44,6 +25,3 @@ services:
         condition: service_started
     ports:
       - "19631:18931"
-
-volumes:
-  q1008cam26_pg_data_31415:

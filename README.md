@@ -16,13 +16,8 @@ Este proyecto es una base **multi-quiniela** enfocada en Mundial 2026, con:
 - Docker (para Postgres) — (vos ya lo tenés)
 - npm 9+
 
-## 1) Levantar Postgres (ejemplo)
-Si ya tenés Postgres con Docker, podés saltarte esto.
-Si querés usar el ejemplo:
-
-```bash
-docker compose up -d
-```
+## 1) Base de datos
+Este proyecto está configurado para usar Neon vía `DATABASE_URL` desde `apps/api/.env`.
 
 ## 2) Variables de entorno
 
@@ -87,12 +82,11 @@ Pantallas web:
 
 ## 7) Correr con Docker (VPS)
 
-Esta opcion levanta **Postgres + API + Web** con un solo comando.
+Esta opcion levanta **API + Web** con un solo comando (la DB corre en Neon).
 
 ### Variables importantes
 - `JWT_SECRET` se debe definir solo por entorno.
 - Variables SMTP y `WEB_URL` se leen desde `apps/api/.env` en Docker.
-- Variables de Postgres para Docker (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`) deben definirse por entorno.
 - Para recuperacion de contrasena en produccion, `WEB_URL` debe apuntar a tu URL publica (no `localhost`).
 
 Si no existe `apps/api/.env`, crealo antes de levantar Docker.
@@ -104,7 +98,7 @@ docker compose up -d --build
 
 ### Ver logs
 ```bash
-docker compose logs -f api web postgres
+docker compose logs -f api web
 ```
 
 ### URLs por defecto
@@ -157,3 +151,5 @@ docker compose build --no-cache --pull
 docker compose up -d --force-recreate --remove-orphans
 docker image prune -f
 docker builder prune -f
+
+docker compose logs -f api web
