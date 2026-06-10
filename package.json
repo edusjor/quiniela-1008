@@ -1,0 +1,21 @@
+{
+  "name": "quiniela-1008",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail -n api,web -c cyan,magenta \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev -w @quiniela1008/api",
+    "dev:web": "npm run dev -w @quiniela1008/web",
+    "build": "npm run build -w @quiniela1008/api && npm run build -w @quiniela1008/web",
+    "prisma:generate": "npm run prisma:generate -w @quiniela1008/api",
+    "prisma:migrate": "npm run prisma:migrate -w @quiniela1008/api",
+    "db:seed": "npm run db:seed -w @quiniela1008/api",
+    "db:users": "npm run db:users -w @quiniela1008/api",
+    "db:teams": "npm run db:teams -w @quiniela1008/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

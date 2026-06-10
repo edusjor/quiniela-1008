@@ -1,0 +1,20 @@
+{
+  "name": "@quiniela1008/web",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 8371",
+    "build": "next build",
+    "start": "next start -p 8371",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "25.2.3",
+    "@types/react": "19.2.14"
+  }
+}
+

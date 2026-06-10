@@ -1,0 +1,22 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Build outputs
+apps/*/.next
+apps/*/dist
+
+# Local env and editor files
+.env
+.env.*
+apps/*/.env
+apps/*/.env.local
+.vscode
+
+# VCS
+.git
+.gitignore
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,197 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  SUPERADMIN
+}
+
+enum LeagueRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String   @unique
+  fullName     String?
+  nationalId   String?  @unique
+  instagramUsername String?
+  birthDate    DateTime?
+  purchaseProofImage String?
+  followsInstagram Boolean @default(false)
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  leagues        LeagueMember[]
+  predictions    Prediction[]
+  createdLeagues League[] @relation("CreatedLeagues")
+  profile        UserProfile?
+  finalPicks     FinalPick[]
+  passwordResetTokens PasswordResetToken[]
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?
+  logoUrl   String?
+  leagueId  String?
+  createdAt DateTime @default(now())
+
+  league League? @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+
+  @@index([leagueId, name])
+  @@unique([leagueId, code])
+}
+
+model FinalistTeam {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?  @unique
+  logoUrl   String?
+  createdAt DateTime @default(now())
+
+  finalist1Picks FinalPick[] @relation("Finalist1Team")
+  finalist2Picks FinalPick[] @relation("Finalist2Team")
+  championPicks  FinalPick[] @relation("ChampionTeam")
+}
+
+model UserProfile {
+  userId      String   @id
+  fullName    String
+  nationalId  String
+  phone       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([nationalId])
+}
+
+model FinalPick {
+  id              String   @id @default(cuid())
+  userId          String
+  season          Int
+  finalist1TeamId String
+  finalist2TeamId String
+  championTeamId  String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  finalist1Team FinalistTeam @relation("Finalist1Team", fields: [finalist1TeamId], references: [id])
+  finalist2Team FinalistTeam @relation("Finalist2Team", fields: [finalist2TeamId], references: [id])
+  championTeam  FinalistTeam @relation("ChampionTeam", fields: [championTeamId], references: [id])
+
+  @@unique([userId, season])
+  @@index([season])
+}
+
+model Match {
+  id           String   @id @default(cuid())
+  leagueId     String
+  league       League   @relation(fields: [leagueId], references: [id])
+
+  homeTeamId   String
+  homeTeam     Team @relation("HomeTeam", fields: [homeTeamId], references: [id])
+
+  awayTeamId   String
+  awayTeam     Team @relation("AwayTeam", fields: [awayTeamId], references: [id])
+
+  kickoffAt    DateTime
+  lockAt       DateTime
+  groupName    String?
+
+  finalHome    Int?
+  finalAway    Int?
+  createdAt    DateTime @default(now())
+
+  predictions  Prediction[]
+
+  @@index([leagueId, kickoffAt])
+}
+
+model League {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  isPublic     Boolean  @default(false)
+  joinCode     String   @unique
+  createdById  String
+  createdBy    User     @relation("CreatedLeagues", fields: [createdById], references: [id])
+
+  pointsExact   Int @default(3)
+  pointsOutcome Int @default(1)
+  deletedAt     DateTime?
+
+  createdAt DateTime @default(now())
+
+  members     LeagueMember[]
+  matches     Match[]
+  predictions Prediction[]
+  teams       Team[]
+}
+
+model LeagueMember {
+  id        String     @id @default(cuid())
+  leagueId  String
+  userId    String
+  role      LeagueRole @default(MEMBER)
+  joinedAt  DateTime   @default(now())
+
+  league League @relation(fields: [leagueId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([leagueId, userId])
+}
+
+model Prediction {
+  id        String   @id @default(cuid())
+  leagueId  String
+  userId    String
+  matchId   String
+
+  predHome  Int
+  predAway  Int
+
+  points    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  league League @relation(fields: [leagueId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  match  Match  @relation(fields: [matchId], references: [id])
+
+  @@unique([leagueId, userId, matchId])
+  @@index([leagueId, matchId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
