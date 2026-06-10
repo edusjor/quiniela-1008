@@ -73,8 +73,8 @@ O ambos:
 npm run dev
 ```
 
-- API: http://localhost:7432
-- WEB: http://localhost:8371
+- API: http://localhost:17643
+- WEB: http://localhost:18931
 
 ## 6.1) Recuperar contrasena
 La app incluye flujo de recuperacion por email:
@@ -108,8 +108,8 @@ docker compose logs -f api web postgres
 ```
 
 ### URLs por defecto
-- Web: http://TU_IP_O_DOMINIO:8371
-- API health: http://TU_IP_O_DOMINIO:6371/health
+- Web: http://TU_IP_O_DOMINIO:19631
+- API health (vía web): http://TU_IP_O_DOMINIO:19631/backend/health
 
 Notas:
 - El contenedor `api` ejecuta `prisma migrate deploy` al iniciar, para aplicar migraciones pendientes.

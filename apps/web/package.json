@@ -2,9 +2,9 @@
   "name": "@quiniela1008/web",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8371",
+    "dev": "next dev -p 18931",
     "build": "next build",
-    "start": "next start -p 8371",
+    "start": "next start -p 18931",
     "lint": "next lint"
   },
   "dependencies": {

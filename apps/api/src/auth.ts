@@ -33,7 +33,7 @@ function hashResetToken(token: string) {
 }
 
 function buildPasswordResetUrl(rawToken: string) {
-  const baseUrl = (process.env.WEB_URL || 'http://localhost:8371').trim().replace(/\/$/, '');
+  const baseUrl = (process.env.WEB_URL || 'http://localhost:18931').trim().replace(/\/$/, '');
   return `${baseUrl}/reset-password?token=${encodeURIComponent(rawToken)}`;
 }
 

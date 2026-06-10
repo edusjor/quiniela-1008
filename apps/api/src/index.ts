@@ -7,7 +7,7 @@ import { leagueRoutes } from './leagues.js';
 
 const app = Fastify({ logger: true });
 
-const PORT = Number(process.env.PORT || 7432);
+const PORT = Number(process.env.PORT || 17643);
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error('Missing JWT_SECRET environment variable');

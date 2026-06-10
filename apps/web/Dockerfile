@@ -21,7 +21,7 @@ COPY --from=builder /app/package.json /app/package-lock.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/web ./apps/web
 
-EXPOSE 8371
+EXPOSE 18931
 
 CMD ["npm", "run", "start", "-w", "@quiniela1008/web"]
 

@@ -20,10 +20,10 @@ function resolveApiUrl() {
 
   // When opening the web app via LAN IP, reuse that host for API calls.
   if (typeof window !== 'undefined') {
-    return `${window.location.protocol}//${window.location.hostname}:7432`;
+    return `${window.location.protocol}//${window.location.hostname}:17643`;
   }
 
-  return 'http://localhost:7432';
+  return 'http://localhost:17643';
 }
 
 export type User = {

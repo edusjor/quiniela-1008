@@ -1,14 +1,14 @@
 services:
   postgres:
     image: postgres:16
-    container_name: quiniela1008_pg
+    container_name: q1008cam26_pg_31415
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - quiniela1008_pg_data:/var/lib/postgresql/data
+      - q1008cam26_pg_data_31415:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -19,12 +19,12 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    container_name: quiniela1008_api
+    container_name: q1008cam26_api_31415
     restart: unless-stopped
     env_file:
       - ./apps/api/.env
     environment:
-      PORT: 6371
+      PORT: 17643
     depends_on:
       postgres:
         condition: service_healthy
@@ -35,7 +35,7 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: /backend
-    container_name: quiniela1008_web
+    container_name: q1008cam26_web_31415
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_URL: /backend
@@ -43,7 +43,7 @@ services:
       api:
         condition: service_started
     ports:
-      - "6371:8371"
+      - "19631:18931"
 
 volumes:
-  quiniela1008_pg_data:
+  q1008cam26_pg_data_31415:
