@@ -1732,15 +1732,17 @@ h1,h2,h3{
 }
 
 .qb-pending-actions .btn.pending-discard{
-  background:linear-gradient(180deg, #6f3c3c, #5a2f2f);
-  border-color:#be9090;
-  color:#fff3f3;
+  background:linear-gradient(180deg, #b22a2a, #8f1d1d);
+  border-color:#ff8a8a;
+  color:#fff5f5;
+  box-shadow:0 0 0 1px rgba(255, 106, 106, .24), 0 2px 0 rgba(0,0,0,.45);
 }
 
 .qb-pending-actions .btn.pending-save{
-  background:linear-gradient(180deg, #2f7d56, #266446);
-  border-color:#8cc7a7;
-  color:#f0fff6;
+  background:linear-gradient(180deg, #1fa85f, #16834a);
+  border-color:#7fe7ad;
+  color:#f4fff8;
+  box-shadow:0 0 0 1px rgba(76, 235, 143, .24), 0 2px 0 rgba(0,0,0,.45);
 }
 
 .qb-pending-spacer{

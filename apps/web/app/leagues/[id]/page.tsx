@@ -258,7 +258,10 @@ export default function LeaguePage({ params }: { params: { id: string } }) {
         ? openMatchesWithPrediction
         : closedMatches;
   const matchById = useMemo(() => new Map(matches.map((match) => [match.id, match])), [matches]);
-  const msgIsSuccess = msg === 'Pronósticos guardados correctamente.' || msg?.startsWith('Se guardaron ');
+  const msgIsSuccess =
+    msg === 'Pronósticos guardados correctamente.'
+    || msg?.startsWith('Se guardaron ')
+    || msg === 'Resultado final guardado correctamente.';
 
   const pendingPredictionIds = useMemo(() => {
     return matches
@@ -978,6 +981,7 @@ export default function LeaguePage({ params }: { params: { id: string } }) {
                                     body: JSON.stringify({ finalHome: fh, finalAway: fa }),
                                   });
                                   await load();
+                                  setMsg('Resultado final guardado correctamente.');
                                 } catch (e: any) {
                                   setMsg(e.message);
                                 }
