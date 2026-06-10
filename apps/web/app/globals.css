@@ -222,29 +222,54 @@ h1,h2,h3{
 }
 
 .btn{
-  border:2px solid #111;
-  background:linear-gradient(90deg, rgba(255,156,33,1), rgba(255,63,194,.92));
-  color:#0f0f0f;
+  --btn-border:linear-gradient(96deg, rgba(55,215,255,.95), rgba(47,99,255,.9) 35%, rgba(255,63,194,.92) 68%, rgba(255,156,33,.96));
+  position:relative;
+  border:2px solid transparent;
+  background:transparent !important;
+  color:#e8f9ff;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   letter-spacing:.4px;
   text-transform:uppercase;
   padding:10px 14px;
-  border-radius:11px;
+  border-radius:10px;
   cursor:pointer;
-  box-shadow:0 3px 0 #000;
-  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.05);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease, color .15s ease;
+  isolation:isolate;
 }
 
-.btn:hover{filter:brightness(1.06)}
-.btn:active{transform:translateY(2px); box-shadow:0 1px 0 #000}
+.btn::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:2px;
+  background:var(--btn-border);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  pointer-events:none;
+}
 
-.btn.primary{background:var(--yellow)}
+.btn:hover{
+  filter:brightness(1.08);
+  color:#ffffff;
+  box-shadow:0 9px 22px rgba(0,0,0,.42), 0 0 12px rgba(55,215,255,.25), 0 0 16px rgba(255,63,194,.2);
+}
+
+.btn:active{transform:translateY(2px); box-shadow:0 3px 10px rgba(0,0,0,.35)}
+
+.btn.primary{
+  --btn-border:linear-gradient(96deg, rgba(255,156,33,1), rgba(255,63,194,.97), rgba(47,99,255,.95), rgba(55,215,255,.98));
+  background:transparent !important;
+  color:#fff7e9;
+}
 
 .btn.green{
-  background:#f1f1f1;
-  color:#111;
-  border-color:var(--yellow);
-  box-shadow:0 3px 0 #574700;
+  --btn-border:linear-gradient(96deg, rgba(55,215,255,.96), rgba(47,99,255,.94));
+  background:transparent !important;
+  color:#dff9ff;
+  box-shadow:0 6px 16px rgba(0,0,0,.34), 0 0 10px rgba(55,215,255,.18);
 }
 
 .card{
@@ -259,6 +284,7 @@ h1,h2,h3{
 .grid{display:grid; gap:14px}
 .grid.cols2{grid-template-columns: repeat(2, minmax(0,1fr))}
 .grid.cols3{grid-template-columns: repeat(3, minmax(0,1fr))}
+
 
 .module-grid{margin-top:10px}
 
