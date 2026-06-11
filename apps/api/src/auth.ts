@@ -226,14 +226,46 @@ export async function authRoutes(app: FastifyInstance) {
 
     const cleanIdentifier = parsed.data.identifier.trim();
     const emailCandidate = looksLikeEmail(cleanIdentifier) ? normalizeEmail(cleanIdentifier) : null;
-    const nationalIdCandidate = emailCandidate ? null : normalizeNationalId(cleanIdentifier);
+    let user: {
+      id: string;
+      email: string;
+      fullName: string | null;
+    } | null = null;
 
     if (emailCandidate) {
       if (!/^\S+@\S+\.\S+$/.test(emailCandidate)) {
         return reply.code(400).send({ error: 'Ingresa un correo electrónico válido o una cédula válida' });
       }
-    } else if (nationalIdCandidate.length < 5) {
-      return reply.code(400).send({ error: 'Ingresa un correo electrónico válido o una cédula válida' });
+
+      user = await prisma.user.findFirst({
+        where: {
+          email: {
+            equals: emailCandidate,
+            mode: 'insensitive',
+          },
+        },
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+        },
+      });
+    } else {
+      const nationalIdCandidate = normalizeNationalId(cleanIdentifier);
+      if (nationalIdCandidate.length < 5) {
+        return reply.code(400).send({ error: 'Ingresa un correo electrónico válido o una cédula válida' });
+      }
+
+      user = await prisma.user.findFirst({
+        where: {
+          nationalId: nationalIdCandidate,
+        },
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+        },
+      });
     }
 
     const exposeDebugDetails = process.env.NODE_ENV !== 'production' && process.env.PASSWORD_RESET_DEBUG !== 'false';
@@ -253,24 +285,6 @@ export async function authRoutes(app: FastifyInstance) {
       ok: true,
       message: 'Si los datos existen, te enviamos instrucciones para restablecer tu contraseña.',
     };
-
-    const user = await prisma.user.findFirst({
-      where: emailCandidate
-        ? {
-            email: {
-              equals: emailCandidate,
-              mode: 'insensitive',
-            },
-          }
-        : {
-            nationalId: nationalIdCandidate,
-          },
-      select: {
-        id: true,
-        email: true,
-        fullName: true,
-      },
-    });
 
     if (!user) {
       if (exposeDebugDetails) {

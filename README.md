@@ -156,3 +156,6 @@ docker compose logs -f api web
 
 sudo nginx -t
 sudo systemctl reload nginx
+
+
+
