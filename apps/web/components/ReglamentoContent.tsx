@@ -83,17 +83,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       </section>
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>5. Certificados de consumo</h3>
-        <ul className="rules-list small">
-          <li>Los certificados no son canjeables por efectivo.</li>
-          <li>No aplican para devolución de dinero.</li>
-          <li>Los certificados podrán utilizarse una única vez.</li>
-          <li>Pueden estar sujetos a fechas de vencimiento o restricciones definidas por 1008.</li>
-        </ul>
-      </section>
-
-      <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>6. Condiciones generales</h3>
+        <h3 style={{ marginTop: 0 }}>5. Condiciones generales</h3>
         <ul className="rules-list small" style={{ marginBottom: 8 }}>
           <li>La participación en la quiniela implica la aceptación total de este reglamento.</li>
           <li>1008 se reserva el derecho de descalificar participantes que incumplan las reglas o afecten el desarrollo normal de la dinámica.</li>

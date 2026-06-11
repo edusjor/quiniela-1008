@@ -36,24 +36,19 @@ export default function RegisterPage() {
 
         <div className="register-layout">
           <div className="card register-panel">
-            <h3 style={{ marginTop: 0, marginBottom: 6 }}>Lee y acepta el reglamento oficial</h3>
-            <p className="small" style={{ marginTop: 0, marginBottom: 8 }}>
-              Debes leer el reglamento completo antes de crear tu cuenta.
-            </p>
             <div className="register-rules-box">
               <ReglamentoContent compact />
             </div>
-            <label className="small register-confirm-row register-rules-check">
+            <label className="register-accept-row">
               <input
                 type="checkbox"
                 checked={acceptedRules}
                 onChange={(e) => setAcceptedRules(e.target.checked)}
-                style={{ marginTop: 2 }}
               />
-              Confirmo que leí y acepto el reglamento de la quiniela.
+              <span>Confirmo que leí y acepto el reglamento.</span>
             </label>
-            <div className="small" style={{ marginTop: 8 }}>
-              También puedes verlo en una página dedicada: <Link href="/reglamento">Ver reglamento completo</Link>
+            <div className="small" style={{ marginTop: 6, color: 'var(--muted)' }}>
+              <Link href="/reglamento">Ver reglamento completo</Link>
             </div>
           </div>
 

@@ -2079,6 +2079,28 @@ h1,h2,h3{
   margin-top:10px;
 }
 
+.register-accept-row{
+  margin-top:14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border:1px solid rgba(55,215,255,.45);
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(55,215,255,.08), rgba(55,215,255,.03));
+  cursor:pointer;
+  font-weight:700;
+  font-size:14px;
+}
+
+.register-accept-row input[type="checkbox"]{
+  width:18px;
+  height:18px;
+  flex-shrink:0;
+  cursor:pointer;
+  accent-color:var(--brand-cyan);
+}
+
 .pick-grid{
   display:grid;
   gap:12px;
