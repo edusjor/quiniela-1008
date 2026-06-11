@@ -2037,6 +2037,14 @@ h1,h2,h3{
   background:linear-gradient(180deg, rgba(19,184,175,.16), rgba(19,184,175,.07));
 }
 
+.rules-important{
+  border:1px solid rgba(255,156,33,.7);
+  border-radius:11px;
+  padding:12px;
+  color:#ffe8c7;
+  background:linear-gradient(180deg, rgba(255,156,33,.2), rgba(255,156,33,.08));
+}
+
 .rules-example-grid{
   margin-top:10px;
   margin-bottom:10px;
@@ -2053,12 +2061,18 @@ h1,h2,h3{
 }
 
 .register-rules-box{
-  border:1px solid #303030;
-  border-radius:12px;
-  padding:10px;
+  border:none;
+  border-radius:0;
+  padding:0;
   max-height:320px;
   overflow:auto;
-  background:rgba(0,0,0,.22);
+  background:transparent;
+}
+
+.register-rules-box .rules-section{
+  border-left:none;
+  border-right:none;
+  border-radius:0;
 }
 
 .register-rules-check{

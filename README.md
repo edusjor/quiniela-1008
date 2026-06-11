@@ -144,7 +144,7 @@ docker compose up -d --build --force-recreate
 
 
 
-cd /home/quiniela-1008/htdocs/quiniela.1008.com/app
+cd /home/diez08-quiniela/htdocs/quiniela.diez08.com/quiniela-1008
 git pull
 docker compose down --remove-orphans
 docker compose build --no-cache --pull

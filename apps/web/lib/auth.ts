@@ -7,9 +7,9 @@ type RegisterPayload = {
   username: string;
   fullName: string;
   nationalId: string;
-  instagramUsername: string;
+  instagramUsername?: string;
   birthDate: string;
-  followsInstagram: boolean;
+  followsInstagram?: boolean;
   acceptedRules: boolean;
   password: string;
 };

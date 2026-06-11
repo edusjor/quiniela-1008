@@ -5,6 +5,10 @@ type ReglamentoContentProps = {
 export default function ReglamentoContent({ compact = false }: ReglamentoContentProps) {
   return (
     <div className="rules-layout">
+      <div className="rules-important">
+        <b>Importante:</b> esta quiniela será solo para la participación de los miembros colaboradores de 1008.
+      </div>
+
       {!compact && (
         <div className="rules-note">
           <b>Reglamento oficial de participación.</b> Inscribirte y jugar implica aceptar todas estas condiciones.
@@ -12,24 +16,9 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       )}
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>1. Participación</h3>
-        <p className="small" style={{ marginTop: 0 }}>
-          La participación en la Quiniela es totalmente gratuita. Para participar debes cumplir todos los siguientes requisitos:
-        </p>
-        <ul className="rules-list small">
-          <li>Seguir nuestra cuenta oficial en Instagram: @1008.</li>
-          <li>Completar correctamente el formulario o mecanismo oficial de participación.</li>
-        </ul>
-        <p className="small" style={{ marginBottom: 0 }}>
-          El incumplimiento de cualquiera de estos requisitos dará como resultado la eliminación automática de la quiniela,
-          incluso cuando el participante se encuentre entre las posiciones ganadoras.
-        </p>
-      </section>
-
-      <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>2. Premios</h3>
+        <h3 style={{ marginTop: 0 }}>1. Premios</h3>
         <ul className="rules-list small" style={{ marginBottom: 8 }}>
-          <li>El premio oficial es 1 fin de semana en Hotel Hilton para el ganador.</li>
+          <li>Pronto publicaremos los premios oficiales.</li>
         </ul>
         <p className="small" style={{ marginBottom: 0 }}>
           Las condiciones de entrega, fechas y restricciones serán comunicadas por la organización.
@@ -37,7 +26,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       </section>
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>3. Sistema de puntuación</h3>
+        <h3 style={{ marginTop: 0 }}>2. Sistema de puntuación</h3>
         <p className="small" style={{ marginTop: 0 }}>Los puntos se asignarán de la siguiente manera:</p>
         <ul className="rules-list small">
           <li>Marcador exacto acertado: 3 puntos.</li>
@@ -73,7 +62,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       </section>
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>4. Reglas de desempate</h3>
+        <h3 style={{ marginTop: 0 }}>3. Reglas de desempate</h3>
         <p className="small" style={{ marginTop: 0 }}>
           En caso de empate en cualquier posición ganadora, se aplicarán los siguientes criterios en orden:
         </p>
@@ -85,7 +74,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       </section>
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>5. Participación y validez</h3>
+        <h3 style={{ marginTop: 0 }}>4. Participación y validez</h3>
         <ul className="rules-list small">
           <li>Solo se permitirá una participación por persona.</li>
           <li>Los participantes deberán ingresar información real y verificable.</li>
@@ -94,7 +83,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       </section>
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>6. Certificados de consumo</h3>
+        <h3 style={{ marginTop: 0 }}>5. Certificados de consumo</h3>
         <ul className="rules-list small">
           <li>Los certificados no son canjeables por efectivo.</li>
           <li>No aplican para devolución de dinero.</li>
@@ -104,7 +93,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       </section>
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>7. Condiciones generales</h3>
+        <h3 style={{ marginTop: 0 }}>6. Condiciones generales</h3>
         <ul className="rules-list small" style={{ marginBottom: 8 }}>
           <li>La participación en la quiniela implica la aceptación total de este reglamento.</li>
           <li>1008 se reserva el derecho de descalificar participantes que incumplan las reglas o afecten el desarrollo normal de la dinámica.</li>

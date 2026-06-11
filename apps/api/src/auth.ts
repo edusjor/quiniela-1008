@@ -12,8 +12,10 @@ function normalizeNationalId(value: string) {
   return digitsOnly.length >= 5 ? digitsOnly : compact.toUpperCase();
 }
 
-function normalizeInstagramUsername(value: string) {
-  return value.trim().replace(/^@+/, '').toLowerCase();
+function normalizeInstagramUsername(value?: string) {
+  if (!value) return null;
+  const normalized = value.trim().replace(/^@+/, '').toLowerCase();
+  return normalized || null;
 }
 
 function normalizeUsername(value: string) {
@@ -80,7 +82,7 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.code(400).send({ error: 'Número de cédula inválido' });
     }
 
-    if (cleanInstagramUsername.length < 2) {
+    if (cleanInstagramUsername && cleanInstagramUsername.length < 2) {
       return reply.code(400).send({ error: 'Usuario de Instagram inválido' });
     }
 
@@ -129,7 +131,7 @@ export async function authRoutes(app: FastifyInstance) {
           nationalId: cleanNationalId,
           instagramUsername: cleanInstagramUsername,
           birthDate: birthDateValue,
-          followsInstagram,
+          followsInstagram: Boolean(followsInstagram),
           passwordHash: await bcrypt.hash(password, 10),
         },
         select: {
