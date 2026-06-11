@@ -18,7 +18,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       <section className="rules-section">
         <h3 style={{ marginTop: 0 }}>1. Premios</h3>
         <ul className="rules-list small" style={{ marginBottom: 8 }}>
-          <li>Primer lugar: Un finde Semana en el Hotel Hilton para dos personas. </li>
+          <li>Primer lugar: Un fin de Semana en el Hotel Hilton Puntarenas para dos personas. </li>
         </ul>
         <p className="small" style={{ marginBottom: 0 }}>
           Las condiciones de entrega, fechas y restricciones serán comunicadas por la organización.

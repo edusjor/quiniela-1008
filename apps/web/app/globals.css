@@ -440,6 +440,28 @@ h1,h2,h3{
 
 .register-actions{
   margin-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.register-actions-msg{
+  margin-top:0;
+  margin-bottom:0;
+  border-color:#7b2d2d;
+}
+
+.register-actions .btn{
+  width:100%;
+  min-height:52px;
+  padding:14px 18px;
+  font-size:15px;
+  line-height:1.1;
+}
+
+.register-actions .btn.primary{
+  font-size:16px;
+  letter-spacing:.8px;
 }
 
 .admin-tabs{
