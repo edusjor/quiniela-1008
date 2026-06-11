@@ -251,7 +251,7 @@ export default function LeaguePage({ params }: { params: { id: string } }) {
   });
   const visibleMatches =
     matchesTab === 'all'
-      ? openMatches
+      ? matches
       : matchesTab === 'without-prediction'
       ? openMatchesWithoutPrediction
       : matchesTab === 'predicted'
@@ -814,7 +814,7 @@ export default function LeaguePage({ params }: { params: { id: string } }) {
             <h3 style={{ marginTop: 0, marginBottom: 0 }}>Mis partidos</h3>
             <div className="row-actions">
               <button className={`btn ${matchesTab === 'all' ? 'primary' : ''}`} onClick={() => setMatchesTab('all')}>
-                Todos ({openMatches.length})
+                Todos ({matches.length})
               </button>
               <button className={`btn ${matchesTab === 'without-prediction' ? 'primary' : ''}`} onClick={() => setMatchesTab('without-prediction')}>
                 Sin pronosticar ({openMatchesWithoutPrediction.length})
