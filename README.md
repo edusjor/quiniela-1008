@@ -153,3 +153,6 @@ docker image prune -f
 docker builder prune -f
 
 docker compose logs -f api web
+
+sudo nginx -t
+sudo systemctl reload nginx

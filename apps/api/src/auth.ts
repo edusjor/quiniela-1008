@@ -541,7 +541,7 @@ export async function authRoutes(app: FastifyInstance) {
 
     if (typeof data.instagramUsername === 'string') {
       const cleanInstagramUsername = normalizeInstagramUsername(data.instagramUsername);
-      if (cleanInstagramUsername.length < 2) {
+        if (!cleanInstagramUsername || cleanInstagramUsername.length < 2) {
         return reply.code(400).send({ error: 'Usuario de Instagram inválido' });
       }
       updateData.instagramUsername = cleanInstagramUsername;
