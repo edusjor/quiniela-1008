@@ -45,7 +45,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
           <div className="rules-example">
             <div className="small"><b>Ejemplo 2</b></div>
             <div className="small">Predicción: Argentina 3 - 1 Brasil</div>
-            <div className="small">Resultado final: Argentina 2 - 1 Brasil</div>
+            <div className="small">Resultado final: Argentina 2 - 0 Brasil</div>
             <div className="small"><b>= 1 punto (acertó el ganador)</b></div>
           </div>
 

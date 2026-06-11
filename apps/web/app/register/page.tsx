@@ -35,24 +35,16 @@ export default function RegisterPage() {
         {msg && <div className={`card register-msg ${msgType === 'success' ? 'register-msg-success' : ''}`}>{msg}</div>}
 
         <div className="register-layout">
-          <div className="card register-panel">
+          <div className="card register-panel register-rules-panel">
             <div className="register-rules-box">
               <ReglamentoContent compact />
             </div>
-            <label className="register-accept-row">
-              <input
-                type="checkbox"
-                checked={acceptedRules}
-                onChange={(e) => setAcceptedRules(e.target.checked)}
-              />
-              <span>Confirmo que leí y acepto el reglamento.</span>
-            </label>
             <div className="small" style={{ marginTop: 6, color: 'var(--muted)' }}>
               <Link href="/reglamento">Ver reglamento completo</Link>
             </div>
           </div>
 
-          <div className="card register-panel">
+          <div className="card register-panel register-form-panel">
             <h3 style={{ marginTop: 0, marginBottom: 6 }}>Datos de tu cuenta</h3>
             <p className="small" style={{ marginTop: 0 }}>
               Este formulario crea tu acceso para entrar a quinielas privadas.
@@ -126,6 +118,19 @@ export default function RegisterPage() {
                 autoComplete="new-password"
               />
             </div>
+
+            <div className="register-important-note small">
+              <b>Importante:</b> esta quiniela será solo para la participación de los miembros colaboradores de 1008.
+            </div>
+
+            <label className="register-accept-row">
+              <input
+                type="checkbox"
+                checked={acceptedRules}
+                onChange={(e) => setAcceptedRules(e.target.checked)}
+              />
+              <span>Confirmo que leí y acepto el reglamento.</span>
+            </label>
 
             <div className="row-actions register-actions">
               <button

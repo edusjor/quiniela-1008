@@ -429,6 +429,15 @@ h1,h2,h3{
   margin-top:10px;
 }
 
+.register-important-note{
+  margin-top:14px;
+  padding:12px 14px;
+  border:1px solid rgba(255,156,33,.4);
+  border-radius:10px;
+  background:linear-gradient(180deg, rgba(255,156,33,.08), rgba(255,156,33,.03));
+  line-height:1.45;
+}
+
 .register-actions{
   margin-top:14px;
 }
@@ -2288,9 +2297,23 @@ h1,h2,h3{
   }
 
   .register-shell{padding:18px}
-  .register-layout{grid-template-columns:1fr; gap:14px}
+  .register-layout{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
   .register-panel{padding:16px}
   .register-account-grid{grid-template-columns:1fr}
+  .register-form-panel{order:1}
+  .register-rules-panel{
+    order:2;
+    display:flex;
+    flex-direction:column;
+  }
+  .register-rules-box{order:2; max-height:260px}
+  .register-accept-row{order:1; margin-top:0; margin-bottom:12px}
+
+  .register-rules-panel .small:last-child{order:3}
 
   .admin-desktop-only{
     display:none;
