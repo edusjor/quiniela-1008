@@ -335,7 +335,7 @@ export default function Mundial2026Page() {
             Sumate a la quiniela y participá por premios con tus pronósticos.
           </p>
           <div className="wc-join-actions">
-            <Link className="btn primary" href="/register">Crear cuenta y participar</Link>
+            <Link className="btn primary wc-solid-cta" href="/register">Crear cuenta y participar</Link>
           </div>
         </div>
         <div className="wc-pill-row">

@@ -29,11 +29,10 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       <section className="rules-section">
         <h3 style={{ marginTop: 0 }}>2. Premios</h3>
         <ul className="rules-list small" style={{ marginBottom: 8 }}>
-          <li>Los premios oficiales del torneo están pendientes por anunciar.</li>
-          <li>La organización publicará el detalle de posiciones y montos antes del cierre del campeonato.</li>
+          <li>El premio oficial es 1 fin de semana en Hotel Hilton para el ganador.</li>
         </ul>
         <p className="small" style={{ marginBottom: 0 }}>
-          Las condiciones de entrega, fechas y restricciones también quedan pendientes hasta el anuncio oficial.
+          Las condiciones de entrega, fechas y restricciones serán comunicadas por la organización.
         </p>
       </section>
 
@@ -112,7 +111,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
           <li>Cualquier situación no contemplada en este reglamento será resuelta por la organización.</li>
         </ul>
         <p className="small" style={{ marginBottom: 0 }}>
-          Participa, demuestra quién sabe realmente de fútbol y compite por $500 en efectivo.
+          Demuestra quién sabe realmente de fútbol y compite por el gran premio.
         </p>
       </section>
     </div>

@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="site-support-note" role="contentinfo">
           <div className="site-support-note-inner">
             <span>Si tienes dudas o problemas con la quiniela:</span>{' '}
-            <a href="mailto:soporte@1008.com">soporte@1008.com</a>
+            <a href="mailto:soporte@cam360cr.com">soporte@cam360cr.com</a>
           </div>
         </footer>
       </body>

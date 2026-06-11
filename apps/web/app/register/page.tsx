@@ -40,14 +40,13 @@ export default function RegisterPage() {
 
         <div className="register-layout">
           <div className="card register-panel">
-            <h3 style={{ marginTop: 0, marginBottom: 6 }}>Pasos para habilitar tu participación</h3>
+            <h3 style={{ marginTop: 0, marginBottom: 6 }}>Requisitos para habilitar tu participación</h3>
             <p className="small" style={{ marginTop: 0, marginBottom: 0 }}>
-              Completa estos pasos antes de crear tu cuenta.
+              Completa estos requisitos antes de crear tu cuenta.
             </p>
 
             <div className="register-step-list">
               <div className="register-step">
-                <div className="register-step-index">Paso 1</div>
                 <div className="register-step-title">Seguí a 1008 en Instagram</div>
                 <div className="register-step-content">
                   <a
@@ -62,7 +61,6 @@ export default function RegisterPage() {
               </div>
 
               <div className="register-step">
-                <div className="register-step-index">Paso 2</div>
                 <div className="register-step-title">Escribí tu usuario de Instagram</div>
                 <div className="register-step-content">
                   <input
@@ -77,7 +75,6 @@ export default function RegisterPage() {
               </div>
 
               <div className="register-step">
-                <div className="register-step-index">Paso 3</div>
                 <div className="register-step-title">Confirma</div>
                 <div className="register-step-content">
                   <label className="small register-confirm-row">
@@ -93,7 +90,6 @@ export default function RegisterPage() {
               </div>
 
               <div className="register-step">
-                <div className="register-step-index">Paso 4</div>
                 <div className="register-step-title">Lee y acepta el reglamento oficial</div>
                 <div className="register-step-content">
                   <p className="small" style={{ marginTop: 0, marginBottom: 8 }}>
