@@ -31,6 +31,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
         <ul className="rules-list small">
           <li>Marcador exacto acertado: 3 puntos.</li>
           <li>Ganador del partido acertado: 1 punto.</li>
+          <li>Si el partido termina empatado y se acierta el empate sin marcar el resultado exacto: 1 punto.</li>
         </ul>
 
         <div className="rules-example-grid">
@@ -54,10 +55,17 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
             <div className="small">Resultado final: Argentina 2 - 1 Brasil</div>
             <div className="small"><b>= 0 puntos</b></div>
           </div>
+
+          <div className="rules-example">
+            <div className="small"><b>Ejemplo 4</b></div>
+            <div className="small">Predicción: Argentina 3 - 3 Brasil</div>
+            <div className="small">Resultado final: Argentina 1 - 1 Brasil</div>
+            <div className="small"><b>= 1 punto (acertó el empate)</b></div>
+          </div>
         </div>
 
         <p className="small" style={{ marginBottom: 0 }}>
-          Una vez iniciado el torneo, los pronósticos enviados no podrán modificarse.
+          Una vez iniciado cada partido, los pronósticos enviados no podrán modificarse.
         </p>
       </section>
 
@@ -76,7 +84,7 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       <section className="rules-section">
         <h3 style={{ marginTop: 0 }}>4. Participación y validez</h3>
         <ul className="rules-list small">
-          <li>Solo se permitirá una participación por persona.</li>
+          <li>Solo se permitirá una participación por persona, validado por el número de cédula.</li>
           <li>Los participantes deberán ingresar información real y verificable.</li>
           <li>Participaciones duplicadas, información falsa o intentos de manipulación podrán resultar en descalificación inmediata.</li>
         </ul>
