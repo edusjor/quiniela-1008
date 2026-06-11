@@ -38,10 +38,10 @@ type PasswordResetRequestResponse = {
   };
 };
 
-export async function requestPasswordReset(email: string) {
+export async function requestPasswordReset(identifier: string) {
   return apiFetch<PasswordResetRequestResponse>('/auth/password/forgot', {
     method: 'POST',
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ identifier }),
   });
 }
 

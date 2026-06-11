@@ -22,7 +22,7 @@ export const loginSchema = z.object({
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email(),
+  identifier: z.string().min(3),
 });
 
 export const resetPasswordSchema = z.object({
