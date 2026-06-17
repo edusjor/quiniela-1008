@@ -1,7 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
+import bcrypt from 'bcryptjs';
 import { prisma } from './prisma.js';
-import { adminLeagueTeamSchema, bulkDeleteSchema, bulkDeleteTeamsSchema, bulkPredictionsSchema, createLeagueSchema, createMatchSchema, importMatchesCsvSchema, joinLeagueSchema, predictionSchema, setResultSchema } from './schemas.js';
+import { adminLeagueTeamSchema, adminSetUserPasswordSchema, bulkDeleteSchema, bulkDeleteTeamsSchema, bulkPredictionsSchema, createLeagueSchema, createMatchSchema, importMatchesCsvSchema, joinLeagueSchema, predictionSchema, setResultSchema } from './schemas.js';
 import { makeJoinCode } from './utils.js';
 import { calcPoints, CORRECT_WINNER_POINTS, EXACT_SCORE_POINTS } from './points.js';
 
@@ -550,6 +551,31 @@ export async function leagueRoutes(app: FastifyInstance) {
         hasPurchaseProof: Boolean(user.purchaseProofImage),
       },
     });
+  });
+
+  app.post('/admin/users/:id/password', { preHandler: [app.authenticate, app.requireSuperadmin] }, async (req, reply) => {
+    const id = (req.params as any).id as string;
+    const parsed = adminSetUserPasswordSchema.safeParse(req.body ?? {});
+    if (!parsed.success) return reply.code(400).send({ error: 'Invalid payload', details: parsed.error.flatten() });
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!user) return reply.code(404).send({ error: 'User not found' });
+
+    const nextPasswordHash = await bcrypt.hash(parsed.data.password, 10);
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id },
+        data: { passwordHash: nextPasswordHash },
+      }),
+      prisma.passwordResetToken.deleteMany({ where: { userId: id } }),
+    ]);
+
+    return reply.send({ ok: true, message: 'Contraseña actualizada correctamente' });
   });
 
   app.post('/admin/users/bulk-delete', { preHandler: [app.authenticate, app.requireSuperadmin] }, async (req, reply) => {

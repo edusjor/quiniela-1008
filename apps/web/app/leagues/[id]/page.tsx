@@ -249,14 +249,17 @@ export default function LeaguePage({ params }: { params: { id: string } }) {
     const savedAway = (savedPredAway[m.id] ?? '').trim();
     return savedHome !== '' && savedAway !== '';
   });
+  const closedMatchesSorted = [...closedMatches].sort(
+    (a, b) => new Date(b.kickoffAt).getTime() - new Date(a.kickoffAt).getTime(),
+  );
   const visibleMatches =
     matchesTab === 'all'
-      ? matches
+      ? openMatches
       : matchesTab === 'without-prediction'
       ? openMatchesWithoutPrediction
       : matchesTab === 'predicted'
         ? openMatchesWithPrediction
-        : closedMatches;
+        : closedMatchesSorted;
   const matchById = useMemo(() => new Map(matches.map((match) => [match.id, match])), [matches]);
   const msgIsSuccess =
     msg === 'Pronósticos guardados correctamente.'
@@ -814,7 +817,7 @@ export default function LeaguePage({ params }: { params: { id: string } }) {
             <h3 style={{ marginTop: 0, marginBottom: 0 }}>Mis partidos</h3>
             <div className="row-actions">
               <button className={`btn ${matchesTab === 'all' ? 'primary' : ''}`} onClick={() => setMatchesTab('all')}>
-                Todos ({matches.length})
+                Abiertos ({openMatches.length})
               </button>
               <button className={`btn ${matchesTab === 'without-prediction' ? 'primary' : ''}`} onClick={() => setMatchesTab('without-prediction')}>
                 Sin pronosticar ({openMatchesWithoutPrediction.length})

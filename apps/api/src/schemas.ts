@@ -67,6 +67,10 @@ export const bulkDeleteSchema = z.object({
   ids: bulkIdsSchema,
 });
 
+export const adminSetUserPasswordSchema = z.object({
+  password: z.string().min(6).max(72),
+});
+
 export const bulkDeleteTeamsSchema = z.object({
   leagueId: z.string().min(3),
   ids: bulkIdsSchema,

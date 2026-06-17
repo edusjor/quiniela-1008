@@ -69,6 +69,10 @@ export default function AdminUserProfilePage({ params }: { params: { id: string 
   const [user, setUser] = useState<AdminUserDetail | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [invoicePreview, setInvoicePreview] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [passwordMsg, setPasswordMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (!me || me.role !== 'SUPERADMIN') return;
@@ -147,6 +151,72 @@ export default function AdminUserProfilePage({ params }: { params: { id: string 
                 <div><b>Quinielas unidas:</b> {user._count.leagues}</div>
                 <div><b>Quinielas creadas:</b> {user._count.createdLeagues}</div>
                 <div><b>Pronósticos:</b> {user._count.predictions}</div>
+              </div>
+            </div>
+
+            <div className="card">
+              <h3 style={{ marginTop: 0 }}>Seguridad</h3>
+              <p className="small" style={{ marginTop: 0 }}>
+                Como SUPERADMIN, puedes asignar una nueva contraseña a este usuario.
+              </p>
+
+              {passwordMsg && <div className="card" style={{ marginBottom: 12 }}>{passwordMsg}</div>}
+
+              <div className="label">Nueva contraseña</div>
+              <input
+                className="input"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                autoComplete="new-password"
+              />
+
+              <div className="label">Confirmar contraseña</div>
+              <input
+                className="input"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repite la contraseña"
+                autoComplete="new-password"
+              />
+
+              <div className="row-actions" style={{ marginTop: 12 }}>
+                <button
+                  className="btn primary"
+                  disabled={savingPassword}
+                  onClick={async () => {
+                    setPasswordMsg(null);
+
+                    if (newPassword.length < 6) {
+                      setPasswordMsg('La contraseña debe tener al menos 6 caracteres.');
+                      return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                      setPasswordMsg('Las contraseñas no coinciden.');
+                      return;
+                    }
+
+                    setSavingPassword(true);
+                    try {
+                      const response = await apiFetch<{ ok: boolean; message: string }>(`/admin/users/${user.id}/password`, {
+                        method: 'POST',
+                        body: JSON.stringify({ password: newPassword }),
+                      });
+                      setPasswordMsg(response.message || 'Contraseña actualizada correctamente.');
+                      setNewPassword('');
+                      setConfirmPassword('');
+                    } catch (error: any) {
+                      setPasswordMsg(error?.message ?? 'No se pudo actualizar la contraseña');
+                    } finally {
+                      setSavingPassword(false);
+                    }
+                  }}
+                >
+                  {savingPassword ? 'Guardando...' : 'Actualizar contraseña'}
+                </button>
               </div>
             </div>
 
