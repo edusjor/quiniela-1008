@@ -15,6 +15,7 @@ type Match = {
   groupName: string | null;
   finalHome: number | null;
   finalAway: number | null;
+  finalPenaltyWinnerIsHome: boolean | null;
   homeTeam: { name: string };
   awayTeam: { name: string };
 };
@@ -118,6 +119,8 @@ type LeagueActionModalState = {
 const MIN_FLAG_SEARCH_CHARS = 2;
 const MAX_FLAG_RESULTS = 18;
 const ADMIN_SELECTED_LEAGUE_KEY = 'admin.selectedLeagueId';
+const PENALTY_ELIGIBLE_DATE = '2026-06-28';
+const COSTA_RICA_TIMEZONE = 'America/Costa_Rica';
 const MATCH_GROUP_OPTIONS = ['Grupo A', 'Grupo B', 'Grupo C', 'Grupo D', 'Grupo E', 'Grupo F', 'Grupo G', 'Grupo H'];
 const UNGROUPED_LABEL = 'Sin grupo';
 const ADMIN_NAV_ITEMS: Array<{ id: AdminNavItem; label: string }> = [
@@ -141,6 +144,34 @@ function parseScoreInput(raw: string, label: string) {
   }
 
   return n;
+}
+
+function parseOptionalScore(raw: string) {
+  const value = raw.trim();
+  if (!/^\d+$/.test(value)) return null;
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 0 || n > 99) return null;
+  return n;
+}
+
+function isPenaltyEligibleMatch(kickoffAt: string) {
+  const kickoff = new Date(kickoffAt);
+  if (Number.isNaN(kickoff.getTime())) return false;
+
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: COSTA_RICA_TIMEZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(kickoff);
+
+  const year = parts.find((part) => part.type === 'year')?.value;
+  const month = parts.find((part) => part.type === 'month')?.value;
+  const day = parts.find((part) => part.type === 'day')?.value;
+  if (!year || !month || !day) return false;
+
+  const costaRicaDate = `${year}-${month}-${day}`;
+  return costaRicaDate >= PENALTY_ELIGIBLE_DATE;
 }
 
 function fileToDataUrl(file: File): Promise<string> {
@@ -253,6 +284,7 @@ export default function AdminPage() {
 
   const [finalHome, setFinalHome] = useState<Record<string, string>>({});
   const [finalAway, setFinalAway] = useState<Record<string, string>>({});
+  const [finalPenaltyWinnerIsHome, setFinalPenaltyWinnerIsHome] = useState<Record<string, boolean | null>>({});
   const [editHomeTeam, setEditHomeTeam] = useState<Record<string, string>>({});
   const [editAwayTeam, setEditAwayTeam] = useState<Record<string, string>>({});
   const [editKickoffAt, setEditKickoffAt] = useState<Record<string, string>>({});
@@ -436,10 +468,16 @@ export default function AdminPage() {
   async function loadMatches(currentLeagueId: string) {
     if (!currentLeagueId) {
       setMatches([]);
+      setFinalPenaltyWinnerIsHome({});
       return;
     }
     const r = await apiFetch<{ matches: Match[] }>(`/leagues/${currentLeagueId}/matches`);
     setMatches(r.matches);
+    const penalties: Record<string, boolean | null> = {};
+    r.matches.forEach((match) => {
+      penalties[match.id] = match.finalPenaltyWinnerIsHome ?? null;
+    });
+    setFinalPenaltyWinnerIsHome(penalties);
   }
 
   async function loadLeagueMembers(currentLeagueId: string) {
@@ -671,10 +709,14 @@ export default function AdminPage() {
     const fallbackAway = match.finalAway === null ? '' : String(match.finalAway);
     const fh = parseScoreInput(finalHome[match.id] ?? fallbackHome, 'Resultado local');
     const fa = parseScoreInput(finalAway[match.id] ?? fallbackAway, 'Resultado visitante');
+    const finalPenaltyWinner =
+      fh === fa && isPenaltyEligibleMatch(match.kickoffAt)
+        ? (finalPenaltyWinnerIsHome[match.id] ?? null)
+        : null;
 
     const response = await apiFetch<{ updatedPredictions: number }>(`/leagues/${leagueId}/matches/${match.id}/result`, {
       method: 'PATCH',
-      body: JSON.stringify({ finalHome: fh, finalAway: fa }),
+      body: JSON.stringify({ finalHome: fh, finalAway: fa, finalPenaltyWinnerIsHome: finalPenaltyWinner }),
     });
 
     setMsg(`Resultado guardado. Predicciones recalculadas: ${response.updatedPredictions}`);
@@ -1627,6 +1669,16 @@ export default function AdminPage() {
                         ]));
                         const resultHomeValue = finalHome[row.match.id] ?? (row.match.finalHome === null ? '' : String(row.match.finalHome));
                         const resultAwayValue = finalAway[row.match.id] ?? (row.match.finalAway === null ? '' : String(row.match.finalAway));
+                        const resultHomeNum = parseOptionalScore(resultHomeValue);
+                        const resultAwayNum = parseOptionalScore(resultAwayValue);
+                        const currentResultDraw = resultHomeNum !== null && resultAwayNum !== null && resultHomeNum === resultAwayNum;
+                        const isAdminPenaltyEligible = isPenaltyEligibleMatch(row.match.kickoffAt);
+                        const currentPenaltySelection = currentResultDraw && isAdminPenaltyEligible
+                          ? (finalPenaltyWinnerIsHome[row.match.id] ?? null)
+                          : null;
+                        const selectedPenaltyTeam = currentPenaltySelection === null
+                          ? null
+                          : (currentPenaltySelection ? toSpanishTeamName(homeTeam) : toSpanishTeamName(awayTeam));
 
                         return (
                           <div key={row.match.id} className={`admin-dashboard-row ${isExpanded ? 'expanded' : ''}`}>
@@ -1667,19 +1719,57 @@ export default function AdminPage() {
                               </div>
 
                               <div className="admin-dashboard-cell score">
-                                <input
-                                  className="input admin-dashboard-score-input"
-                                  value={resultHomeValue}
-                                  onChange={(e) => setFinalHome((current) => ({ ...current, [row.match.id]: e.target.value }))}
-                                  inputMode="numeric"
-                                />
-                                <span>-</span>
-                                <input
-                                  className="input admin-dashboard-score-input"
-                                  value={resultAwayValue}
-                                  onChange={(e) => setFinalAway((current) => ({ ...current, [row.match.id]: e.target.value }))}
-                                  inputMode="numeric"
-                                />
+                                <div>
+                                  <div className="row-actions" style={{ justifyContent: 'center' }}>
+                                    <input
+                                      className="input admin-dashboard-score-input"
+                                      value={resultHomeValue}
+                                      onChange={(e) => setFinalHome((current) => ({ ...current, [row.match.id]: e.target.value }))}
+                                      inputMode="numeric"
+                                    />
+                                    <span>-</span>
+                                    <input
+                                      className="input admin-dashboard-score-input"
+                                      value={resultAwayValue}
+                                      onChange={(e) => setFinalAway((current) => ({ ...current, [row.match.id]: e.target.value }))}
+                                      inputMode="numeric"
+                                    />
+                                  </div>
+                                  {currentResultDraw && isAdminPenaltyEligible && (
+                                    <select
+                                      className="input qb-penalty-select"
+                                      style={{ width: '100%', maxWidth: 220, margin: '8px auto 0', display: 'block', textAlign: 'center' }}
+                                      value={
+                                        currentPenaltySelection === null
+                                          ? ''
+                                          : currentPenaltySelection
+                                          ? 'home'
+                                          : 'away'
+                                      }
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        setFinalPenaltyWinnerIsHome((current) => ({
+                                          ...current,
+                                          [row.match.id]: value === '' ? null : value === 'home',
+                                        }));
+                                      }}
+                                    >
+                                      <option value="">Ganador en penales</option>
+                                      <option value="home">Gana {toSpanishTeamName(homeTeam)} en penales</option>
+                                      <option value="away">Gana {toSpanishTeamName(awayTeam)} en penales</option>
+                                    </select>
+                                  )}
+                                  {!currentResultDraw && (
+                                    <div className="small" style={{ marginTop: 8, textAlign: 'center' }}>
+                                      Para penales, primero ingresa un empate.
+                                    </div>
+                                  )}
+                                  {selectedPenaltyTeam && (
+                                    <div className="small" style={{ marginTop: 8, textAlign: 'center' }}>
+                                      Penales: ganó {selectedPenaltyTeam}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
 
                               <div className="admin-dashboard-cell status">

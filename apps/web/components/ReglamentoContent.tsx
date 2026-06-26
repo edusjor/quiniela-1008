@@ -15,6 +15,23 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
         </div>
       )}
 
+      <section className="rules-section" id="puntaje">
+        <h3 style={{ marginTop: 0 }}>Sistema de puntaje y penales</h3>
+        <p className="small" style={{ marginTop: 0 }}>
+          Este es el resumen rápido de cómo se suman los puntos en la quiniela:
+        </p>
+        <ul className="rules-list small" style={{ marginBottom: 8 }}>
+          <li>Marcador exacto acertado: 3 puntos.</li>
+          <li>Empate exacto + ganador en penales correcto: 3.5 puntos.</li>
+          <li>Empate no exacto + ganador en penales correcto: 1.5 puntos.</li>
+          <li>Ganador del partido acertado: 1 punto.</li>
+          <li>Empate acertado sin marcador exacto: 1 punto.</li>
+        </ul>
+        <p className="small" style={{ marginBottom: 0 }}>
+          Los partidos con penales mostrarán la casilla para elegir al ganador solo cuando esa opción aplique.
+        </p>
+      </section>
+
       <section className="rules-section">
         <h3 style={{ marginTop: 0 }}>1. Premios</h3>
         <ul className="rules-list small" style={{ marginBottom: 8 }}>
@@ -26,12 +43,13 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
       </section>
 
       <section className="rules-section">
-        <h3 style={{ marginTop: 0 }}>2. Sistema de puntuación</h3>
+        <h3 style={{ marginTop: 0 }}>3. Sistema de puntuación</h3>
         <p className="small" style={{ marginTop: 0 }}>Los puntos se asignarán de la siguiente manera:</p>
         <ul className="rules-list small">
           <li>Marcador exacto acertado: 3 puntos.</li>
           <li>Ganador del partido acertado: 1 punto.</li>
           <li>Si el partido termina empatado y se acierta el empate sin marcar el resultado exacto: 1 punto.</li>
+          <li>Si aciertas empate (exacto o no exacto) y también aciertas el ganador en penales: 0.5 puntos extra.</li>
         </ul>
 
         <div className="rules-example-grid">
@@ -62,6 +80,20 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
             <div className="small">Resultado final: Argentina 1 - 1 Brasil</div>
             <div className="small"><b>= 1 punto (acertó el empate)</b></div>
           </div>
+
+          <div className="rules-example">
+            <div className="small"><b>Ejemplo 4.1</b></div>
+            <div className="small">Predicción: Argentina 1 - 1 Brasil y gana Argentina en penales</div>
+            <div className="small">Resultado final: Argentina 4 - 4 Brasil y gana Argentina en penales</div>
+            <div className="small"><b>= 1.5 puntos</b></div>
+          </div>
+
+          <div className="rules-example">
+            <div className="small"><b>Ejemplo 5</b></div>
+            <div className="small">Predicción: Argentina 0 - 0 Brasil y gana Argentina en penales</div>
+            <div className="small">Resultado final: Argentina 0 - 0 Brasil y gana Argentina en penales</div>
+            <div className="small"><b>= 3.5 puntos</b></div>
+          </div>
         </div>
 
         <p className="small" style={{ marginBottom: 0 }}>
@@ -75,9 +107,8 @@ export default function ReglamentoContent({ compact = false }: ReglamentoContent
           En caso de empate en cualquier posición ganadora, se aplicarán los siguientes criterios en orden:
         </p>
         <ol className="rules-list small" style={{ paddingLeft: 20 }}>
-          <li>Participante que haya acertado el Campeón y Subcampeón del Mundial.</li>
-          <li>Predicción más cercana a la cantidad total de goles anotados durante todo el Mundial.</li>
-          <li>Si el empate continúa, el premio correspondiente será dividido entre los participantes empatados.</li>
+          <li>Se suman todos los goles que pusiste en tus pronósticos y se compara ese total con la cantidad real de goles del Mundial. Queda mejor posicionado quien esté más cerca del número real.</li>
+          <li>Si sigue empate, se divide el premio.</li>
         </ol>
       </section>
 

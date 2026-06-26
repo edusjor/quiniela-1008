@@ -120,6 +120,7 @@ model Match {
 
   finalHome    Int?
   finalAway    Int?
+  finalPenaltyWinnerIsHome Boolean?
   createdAt    DateTime @default(now())
 
   predictions  Prediction[]
@@ -169,8 +170,9 @@ model Prediction {
 
   predHome  Int
   predAway  Int
+  predPenaltyWinnerIsHome Boolean?
 
-  points    Int?
+  points    Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

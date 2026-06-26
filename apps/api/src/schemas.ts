@@ -80,6 +80,7 @@ export const predictionSchema = z.object({
   matchId: z.string(),
   predHome: z.number().int().min(0).max(99),
   predAway: z.number().int().min(0).max(99),
+  predPenaltyWinnerIsHome: z.boolean().optional().nullable(),
 });
 
 const predictionsArraySchema = z.array(predictionSchema).min(1).max(200);
@@ -92,6 +93,7 @@ export const bulkPredictionsSchema = z.union([
 export const setResultSchema = z.object({
   finalHome: z.number().int().min(0).max(99),
   finalAway: z.number().int().min(0).max(99),
+  finalPenaltyWinnerIsHome: z.boolean().optional().nullable(),
 });
 const imageHttpUrlSchema = z.string().url().refine((url) => {
   const clean = url.split('#')[0].split('?')[0].toLowerCase();
