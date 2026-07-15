@@ -18,6 +18,14 @@ type Fixture = {
   city: string;
 };
 
+type KnockoutStage = 'roundOf32' | 'roundOf16';
+
+type KnockoutFixture = Fixture & {
+  stage: KnockoutStage;
+  matchNumber: number;
+  kickoffEt: string;
+};
+
 type CalendarView = 'day' | 'group';
 
 type FixtureWithMeta = Fixture & {
@@ -35,6 +43,12 @@ type DayBucket = {
   dayLabel: string;
   fixtures: FixtureWithMeta[];
   firstKickoffTimestamp: number;
+};
+
+type KnockoutFixtureWithMeta = KnockoutFixture & {
+  kickoffCrShortDateLabel: string;
+  kickoffCrTimeLabel: string;
+  kickoffUtcTimestamp: number;
 };
 
 const COSTA_RICA_TIMEZONE = 'America/Costa_Rica';
@@ -67,6 +81,11 @@ const kickoffEasternByGroup: Record<string, string[]> = {
   J: ['21:00', '00:00', '13:00', '23:00', '22:00', '22:00'],
   K: ['13:00', '22:00', '13:00', '22:00', '19:30', '19:30'],
   L: ['16:00', '19:00', '16:00', '19:00', '17:00', '17:00'],
+};
+
+const knockoutStageTitleById: Record<KnockoutStage, string> = {
+  roundOf32: 'Dieciseisavos de final',
+  roundOf16: 'Octavos de final',
 };
 
 function toCostaRicaDateKey(date: Date) {
@@ -263,6 +282,33 @@ const fixturesByGroup: Record<string, Fixture[]> = {
   ],
 };
 
+const knockoutFixtures: KnockoutFixture[] = [
+  { stage: 'roundOf32', matchNumber: 73, date: '28 Jun 2026', kickoffEt: '15:00', home: 'South Africa', away: 'Canada', stadium: 'SoFi Stadium', city: 'Inglewood' },
+  { stage: 'roundOf32', matchNumber: 74, date: '29 Jun 2026', kickoffEt: '13:00', home: 'Brazil', away: 'Japan', stadium: 'NRG Stadium', city: 'Houston' },
+  { stage: 'roundOf32', matchNumber: 75, date: '29 Jun 2026', kickoffEt: '16:30', home: 'Germany', away: 'Paraguay', stadium: 'Gillette Stadium', city: 'Foxborough' },
+  { stage: 'roundOf32', matchNumber: 76, date: '29 Jun 2026', kickoffEt: '21:00', home: 'Netherlands', away: 'Morocco', stadium: 'Gillette Stadium', city: 'Foxborough' },
+  { stage: 'roundOf32', matchNumber: 77, date: '30 Jun 2026', kickoffEt: '13:00', home: 'Ivory Coast', away: 'Norway', stadium: 'Estadio BBVA', city: 'Guadalupe' },
+  { stage: 'roundOf32', matchNumber: 78, date: '30 Jun 2026', kickoffEt: '17:00', home: 'France', away: 'Sweden', stadium: 'AT&T Stadium', city: 'Arlington' },
+  { stage: 'roundOf32', matchNumber: 79, date: '30 Jun 2026', kickoffEt: '22:00', home: 'Mexico', away: 'Ecuador', stadium: 'MetLife Stadium', city: 'East Rutherford' },
+  { stage: 'roundOf32', matchNumber: 80, date: '1 Jul 2026', kickoffEt: '12:00', home: 'England', away: 'DR Congo', stadium: 'Estadio Azteca', city: 'Mexico City' },
+  { stage: 'roundOf32', matchNumber: 81, date: '1 Jul 2026', kickoffEt: '16:00', home: 'Belgium', away: 'Senegal', stadium: 'Mercedes-Benz Stadium', city: 'Atlanta' },
+  { stage: 'roundOf32', matchNumber: 82, date: '1 Jul 2026', kickoffEt: '20:00', home: 'United States', away: 'Bosnia and Herzegovina', stadium: 'Lumen Field', city: 'Seattle' },
+  { stage: 'roundOf32', matchNumber: 83, date: '2 Jul 2026', kickoffEt: '15:00', home: 'Spain', away: 'Austria', stadium: "Levi's Stadium", city: 'Santa Clara' },
+  { stage: 'roundOf32', matchNumber: 84, date: '2 Jul 2026', kickoffEt: '19:00', home: 'Portugal', away: 'Croatia', stadium: 'SoFi Stadium', city: 'Inglewood' },
+  { stage: 'roundOf32', matchNumber: 85, date: '2 Jul 2026', kickoffEt: '23:00', home: 'Switzerland', away: 'Algeria', stadium: 'BMO Field', city: 'Toronto' },
+  { stage: 'roundOf32', matchNumber: 86, date: '3 Jul 2026', kickoffEt: '14:00', home: 'Australia', away: 'Egypt', stadium: 'BC Place', city: 'Vancouver' },
+  { stage: 'roundOf32', matchNumber: 87, date: '3 Jul 2026', kickoffEt: '18:00', home: 'Argentina', away: 'Cape Verde', stadium: 'AT&T Stadium', city: 'Arlington' },
+  { stage: 'roundOf32', matchNumber: 88, date: '3 Jul 2026', kickoffEt: '21:30', home: 'Colombia', away: 'Ghana', stadium: 'Hard Rock Stadium', city: 'Miami Gardens' },
+  { stage: 'roundOf16', matchNumber: 89, date: '4 Jul 2026', kickoffEt: '13:00', home: 'Canada', away: 'Morocco', stadium: 'NRG Stadium', city: 'Houston' },
+  { stage: 'roundOf16', matchNumber: 90, date: '4 Jul 2026', kickoffEt: '17:00', home: 'Paraguay', away: 'France', stadium: 'Lincoln Financial Field', city: 'Philadelphia' },
+  { stage: 'roundOf16', matchNumber: 91, date: '5 Jul 2026', kickoffEt: '16:00', home: 'Brazil', away: 'Norway', stadium: 'MetLife Stadium', city: 'East Rutherford' },
+  { stage: 'roundOf16', matchNumber: 92, date: '5 Jul 2026', kickoffEt: '21:00', home: 'Mexico', away: 'England', stadium: 'Estadio Azteca', city: 'Mexico City' },
+  { stage: 'roundOf16', matchNumber: 93, date: '6 Jul 2026', kickoffEt: '15:00', home: 'Portugal', away: 'Spain', stadium: 'AT&T Stadium', city: 'Arlington' },
+  { stage: 'roundOf16', matchNumber: 94, date: '6 Jul 2026', kickoffEt: '20:00', home: 'United States', away: 'Belgium', stadium: 'Lumen Field', city: 'Seattle' },
+  { stage: 'roundOf16', matchNumber: 95, date: '7 Jul 2026', kickoffEt: '12:00', home: 'Argentina', away: 'Egypt', stadium: 'Mercedes-Benz Stadium', city: 'Atlanta' },
+  { stage: 'roundOf16', matchNumber: 96, date: '7 Jul 2026', kickoffEt: '16:00', home: 'Switzerland', away: 'Colombia', stadium: 'BC Place', city: 'Vancouver' },
+];
+
 export default function Mundial2026Page() {
   const [calendarView, setCalendarView] = useState<CalendarView>('day');
 
@@ -320,6 +366,27 @@ export default function Mundial2026Page() {
       .sort((a, b) => a.firstKickoffTimestamp - b.firstKickoffTimestamp);
   }, [fixturesWithMeta]);
 
+  const knockoutFixturesByStage = useMemo<{ stage: KnockoutStage; fixtures: KnockoutFixtureWithMeta[] }[]>(() => {
+    const fixturesWithMeta = knockoutFixtures
+      .map((fixture) => {
+        const kickoffCr = toCostaRicaKickoff(fixture.date, fixture.kickoffEt);
+
+        return {
+          ...fixture,
+          kickoffCrShortDateLabel: kickoffCr.shortDateLabel,
+          kickoffCrTimeLabel: kickoffCr.timeLabel,
+          kickoffUtcTimestamp: kickoffCr.utcTimestamp,
+        };
+      })
+      .sort((a, b) => a.kickoffUtcTimestamp - b.kickoffUtcTimestamp);
+
+    const stageOrder: KnockoutStage[] = ['roundOf32', 'roundOf16'];
+    return stageOrder.map((stage) => ({
+      stage,
+      fixtures: fixturesWithMeta.filter((fixture) => fixture.stage === stage),
+    }));
+  }, []);
+
   return (
     <>
       <Nav />
@@ -328,7 +395,7 @@ export default function Mundial2026Page() {
         <p className="wc-kicker">Público y compartible</p>
         <h1 style={{ marginTop: 8, marginBottom: 10 }}>Calendario Mundial FIFA 2026</h1>
         <p className="small" style={{ maxWidth: 880 }}>
-          Incluye grupos oficiales A-L, selecciones participantes y calendario de fase de grupos para vivir el torneo como se debe.
+          Incluye grupos oficiales A-L, selecciones participantes y calendario de fase de grupos y fase eliminatoria para vivir el torneo como se debe.
         </p>
         <div className="wc-join-cta">
           <p className="small wc-join-copy">
@@ -445,6 +512,39 @@ export default function Mundial2026Page() {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="card">
+        <div className="row-actions" style={{ justifyContent: 'space-between', marginBottom: 12 }}>
+          <h2 style={{ margin: 0 }}>Calendario fase eliminatoria</h2>
+          <span className="small">Dieciseisavos y octavos</span>
+        </div>
+        <p className="small wc-fixture-note">
+          Horarios oficiales FIFA en hora del Este (ET) convertidos a hora de Costa Rica (UTC-6).
+        </p>
+
+        <div className="wc-fixtures-wrap">
+          {knockoutFixturesByStage.map((bucket) => (
+            <article key={`ko-${bucket.stage}`} className="wc-fixture-group">
+              <h3 style={{ marginTop: 0 }}>{knockoutStageTitleById[bucket.stage]}</h3>
+              <div className="wc-fixtures-list">
+                {bucket.fixtures.map((match) => (
+                  <div key={`ko-${match.matchNumber}`} className="wc-fixture-item">
+                    <div className="wc-fixture-date">
+                      {match.kickoffCrShortDateLabel} - {match.kickoffCrTimeLabel} CR - M{match.matchNumber}
+                    </div>
+                    <div className="wc-fixture-match">
+                      <strong><TeamName team={match.home} /></strong>
+                      <span className="small">vs</span>
+                      <strong><TeamName team={match.away} /></strong>
+                    </div>
+                    <div className="small">{match.stadium} - {match.city}</div>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="card" style={{ borderStyle: 'dashed' }}>

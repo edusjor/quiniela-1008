@@ -59,6 +59,7 @@ export const createMatchSchema = z.object({
 
 export const importMatchesCsvSchema = z.object({
   csvContent: z.string().min(1).max(2_000_000),
+  confirmImport: z.boolean().optional().default(false),
 });
 
 const bulkIdsSchema = z.array(z.string().min(3)).min(1).max(500);

@@ -76,14 +76,22 @@ type BulkDeleteResponse = {
 };
 
 type CsvImportResponse = {
+  confirmationRequired?: boolean;
   summary: {
     rowsReceived: number;
+    validRows?: number;
+    matchesToCreate?: number;
+    repeatedMatches?: number;
     createdTeams: number;
     updatedTeams: number;
     createdMatches: number;
     updatedMatches: number;
     unchangedMatches: number;
     errorRows: number;
+  };
+  preview?: {
+    toCreate: Array<{ row: number; homeTeam: string; awayTeam: string; kickoffAt: string; groupName: string | null }>;
+    repeated: Array<{ row: number; homeTeam: string; awayTeam: string; kickoffAt: string; groupName: string | null; reason?: string }>;
   };
   errors: Array<{
     row: number;
@@ -843,9 +851,47 @@ export default function AdminPage() {
       const content = csvContent.trim();
       if (!content) throw new Error('Debes cargar o pegar el contenido CSV');
 
+      const preview = await apiFetch<CsvImportResponse>(`/leagues/${leagueId}/matches/import-csv`, {
+        method: 'POST',
+        body: JSON.stringify({ csvContent: content, confirmImport: false }),
+      });
+
+      const toCreateCount = preview.summary.matchesToCreate ?? 0;
+      const repeatedCount = preview.summary.repeatedMatches ?? 0;
+      const errorCount = preview.summary.errorRows ?? 0;
+      const toCreatePreview = (preview.preview?.toCreate ?? [])
+        .slice(0, 5)
+        .map((item) => `fila ${item.row}: ${item.homeTeam} vs ${item.awayTeam}`)
+        .join('\n');
+      const repeatedPreview = (preview.preview?.repeated ?? [])
+        .slice(0, 5)
+        .map((item) => `fila ${item.row}: ${item.homeTeam} vs ${item.awayTeam} (${item.reason ?? 'repetido'})`)
+        .join('\n');
+
+      if (toCreateCount === 0) {
+        setMsg(`No hay partidos nuevos para importar. Repetidos: ${repeatedCount}. Errores: ${errorCount}.`);
+        return;
+      }
+
+      const confirmationMessage = [
+        `Vista previa del CSV:`,
+        `Nuevos: ${toCreateCount}`,
+        `Repetidos: ${repeatedCount}`,
+        `Errores: ${errorCount}`,
+        toCreatePreview ? `\nNuevos (ejemplos):\n${toCreatePreview}` : '',
+        repeatedPreview ? `\nRepetidos (ejemplos):\n${repeatedPreview}` : '',
+        '\n¿Deseas confirmar la importación de los partidos nuevos?',
+      ].filter(Boolean).join('\n');
+
+      const confirmed = window.confirm(confirmationMessage);
+      if (!confirmed) {
+        setMsg('Importación cancelada por el usuario.');
+        return;
+      }
+
       const response = await apiFetch<CsvImportResponse>(`/leagues/${leagueId}/matches/import-csv`, {
         method: 'POST',
-        body: JSON.stringify({ csvContent: content }),
+        body: JSON.stringify({ csvContent: content, confirmImport: true }),
       });
 
       await Promise.all([loadMatches(leagueId), loadTeams(), loadCore()]);
@@ -857,7 +903,7 @@ export default function AdminPage() {
 
       let message =
         `Importación lista: ${response.summary.createdMatches} partidos nuevos, ` +
-        `${response.summary.updatedMatches} actualizados, ` +
+        `${response.summary.repeatedMatches ?? response.summary.unchangedMatches} repetidos, ` +
         `${response.summary.createdTeams} equipos nuevos.`;
 
       if (response.summary.errorRows > 0) {
@@ -1562,10 +1608,13 @@ export default function AdminPage() {
               <div className="small" style={{ marginBottom: 8 }}>
                 Importa por CSV. Columnas mínimas: <b>homeTeam, awayTeam, kickoffAt</b>. Opcional: <b>lockAt, group, homeLogoUrl, awayLogoUrl</b>.
               </div>
+              <div className="small" style={{ marginBottom: 8 }}>
+                Puedes subir un archivo <b>.csv</b> o pegar el texto directamente en el cuadro de contenido.
+              </div>
 
               <div className="admin-dashboard-csv-grid">
                 <div>
-                  <div className="label">Archivo CSV</div>
+                  <div className="label">Archivo CSV (opcional)</div>
                   <input
                     className="input"
                     type="file"
@@ -1591,7 +1640,7 @@ export default function AdminPage() {
                 </div>
 
                 <div>
-                  <div className="label">Contenido CSV (editable)</div>
+                  <div className="label">Contenido CSV (editable, puedes pegar aquí)</div>
                   <textarea
                     className="input"
                     style={{ minHeight: 120, fontFamily: 'monospace' }}

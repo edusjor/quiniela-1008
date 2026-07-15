@@ -24,6 +24,34 @@ type CsvImportError = {
   message: string;
 };
 
+type CsvImportPreviewMatch = {
+  row: number;
+  homeTeam: string;
+  awayTeam: string;
+  kickoffAt: string;
+  groupName: string | null;
+  reason?: string;
+};
+
+function normalizeTeamForMatchKey(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function buildCsvMatchPreviewKey(row: CsvMatchRow) {
+  return `${normalizeTeamForMatchKey(row.homeTeam)}|${normalizeTeamForMatchKey(row.awayTeam)}|${row.kickoffAt.getTime()}`;
+}
+
+function toCsvImportPreviewMatch(row: CsvMatchRow, reason?: string): CsvImportPreviewMatch {
+  return {
+    row: row.rowNumber,
+    homeTeam: row.homeTeam,
+    awayTeam: row.awayTeam,
+    kickoffAt: row.kickoffAt.toISOString(),
+    groupName: row.groupName,
+    reason,
+  };
+}
+
 function parseCsvLine(line: string) {
   const cells: string[] = [];
   let current = '';
@@ -1104,15 +1132,73 @@ export async function leagueRoutes(app: FastifyInstance) {
       return reply.code(400).send({ error: error?.message ?? 'CSV inválido' });
     }
 
+    const existingMatches = await prisma.match.findMany({
+      where: { leagueId },
+      select: {
+        kickoffAt: true,
+        homeTeam: { select: { name: true } },
+        awayTeam: { select: { name: true } },
+      },
+    });
+
+    const existingKeys = new Set(
+      existingMatches.map((match) => `${normalizeTeamForMatchKey(match.homeTeam.name)}|${normalizeTeamForMatchKey(match.awayTeam.name)}|${match.kickoffAt.getTime()}`),
+    );
+
+    const csvKeys = new Set<string>();
+    const matchesToCreateRows: CsvMatchRow[] = [];
+    const repeatedRows: CsvImportPreviewMatch[] = [];
+
+    for (const row of parsedCsv.rows) {
+      const rowKey = buildCsvMatchPreviewKey(row);
+
+      if (csvKeys.has(rowKey)) {
+        repeatedRows.push(toCsvImportPreviewMatch(row, 'Duplicado dentro del CSV'));
+        continue;
+      }
+
+      csvKeys.add(rowKey);
+
+      if (existingKeys.has(rowKey)) {
+        repeatedRows.push(toCsvImportPreviewMatch(row, 'Ya existe en esta quiniela (mismos equipos y misma hora)'));
+        continue;
+      }
+
+      matchesToCreateRows.push(row);
+    }
+
+    if (!parsed.data.confirmImport) {
+      return reply.send({
+        confirmationRequired: true,
+        summary: {
+          rowsReceived: parsedCsv.rows.length,
+          validRows: parsedCsv.rows.length,
+          matchesToCreate: matchesToCreateRows.length,
+          repeatedMatches: repeatedRows.length,
+          createdTeams: 0,
+          updatedTeams: 0,
+          createdMatches: 0,
+          updatedMatches: 0,
+          unchangedMatches: 0,
+          errorRows: parsedCsv.errors.length,
+        },
+        preview: {
+          toCreate: matchesToCreateRows.slice(0, 80).map((row) => toCsvImportPreviewMatch(row)),
+          repeated: repeatedRows.slice(0, 80),
+        },
+        errors: parsedCsv.errors.slice(0, 40),
+      });
+    }
+
     let createdTeams = 0;
     let updatedTeams = 0;
     let createdMatches = 0;
-    let updatedMatches = 0;
-    let unchangedMatches = 0;
+    let repeatedOnImport = 0;
 
     const errors = [...parsedCsv.errors];
+    const repeatedAfterConfirm: CsvImportPreviewMatch[] = [...repeatedRows];
 
-    for (const row of parsedCsv.rows) {
+    for (const row of matchesToCreateRows) {
       try {
         const homeResult = await findOrCreateTeamForCsvImport({
           leagueId,
@@ -1142,36 +1228,25 @@ export async function leagueRoutes(app: FastifyInstance) {
           },
         });
 
-        if (!existing) {
-          await prisma.match.create({
-            data: {
-              leagueId,
-              homeTeamId: homeResult.team.id,
-              awayTeamId: awayResult.team.id,
-              kickoffAt: row.kickoffAt,
-              lockAt: row.lockAt,
-              groupName: row.groupName,
-            },
-          });
-          createdMatches += 1;
+        if (existing) {
+          repeatedOnImport += 1;
+          repeatedAfterConfirm.push(
+            toCsvImportPreviewMatch(row, 'Ya existe en esta quiniela (mismos equipos y misma hora)'),
+          );
           continue;
         }
 
-        const lockChanged = existing.lockAt.getTime() !== row.lockAt.getTime();
-        const groupChanged = (existing.groupName ?? null) !== row.groupName;
-
-        if (lockChanged || groupChanged) {
-          await prisma.match.update({
-            where: { id: existing.id },
-            data: {
-              lockAt: row.lockAt,
-              groupName: row.groupName,
-            },
-          });
-          updatedMatches += 1;
-        } else {
-          unchangedMatches += 1;
-        }
+        await prisma.match.create({
+          data: {
+            leagueId,
+            homeTeamId: homeResult.team.id,
+            awayTeamId: awayResult.team.id,
+            kickoffAt: row.kickoffAt,
+            lockAt: row.lockAt,
+            groupName: row.groupName,
+          },
+        });
+        createdMatches += 1;
       } catch (error: any) {
         errors.push({
           row: row.rowNumber,
@@ -1181,14 +1256,22 @@ export async function leagueRoutes(app: FastifyInstance) {
     }
 
     return reply.send({
+      confirmationRequired: false,
       summary: {
         rowsReceived: parsedCsv.rows.length,
+        validRows: parsedCsv.rows.length,
+        matchesToCreate: matchesToCreateRows.length,
+        repeatedMatches: repeatedAfterConfirm.length,
         createdTeams,
         updatedTeams,
         createdMatches,
-        updatedMatches,
-        unchangedMatches,
+        updatedMatches: 0,
+        unchangedMatches: repeatedOnImport,
         errorRows: errors.length,
+      },
+      preview: {
+        toCreate: matchesToCreateRows.slice(0, 80).map((row) => toCsvImportPreviewMatch(row)),
+        repeated: repeatedAfterConfirm.slice(0, 80),
       },
       errors: errors.slice(0, 40),
     });
